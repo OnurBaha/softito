@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
-    <div id="box" class="bg-white p-8 rounded-xl shadow text-center transition-color duration-300">
+    <div id="box" class="bg-white p-8 rounded-xl shadow text-center transition-colors duration-300">
         <h1 class="text-4xl font-bold text-red-300 my-4 mb-2">Canlı Sayaç</h1>
         <div id="number" class="text-4xl text-blue-300 my-4">0</div>
         <div class="flex gap-4 justify-center">
@@ -17,18 +17,34 @@
     </div>
     <script>
         let count = 0;
+        const colorLevels = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
+
         const box = document.getElementById('box');
         const number = document.getElementById('number');
         function change(e){
             count += e;
             console.log(count);
             number.textContent=count;
+
+            let positiveCount = count;
+            if(positiveCount < 0){
+                positiveCount = -positiveCount;
+            }
+
+            let colorIndex = positiveCount - 1;
+
+            if(colorIndex > 10){
+                colorIndex = 10;
+            }
+
+            let colorWeight = colorLevels[colorIndex];
+
             if(count > 0){
-                box.className="bg-green-100 p-8 rounded-xl shadow text-center transition-color duration-300";
+                box.className=`bg-green-${colorWeight} p-8 rounded-xl shadow text-center transition-colors duration-300`;
             } else if (count < 0){
-                box.className="bg-red-100 p-8 rounded-xl shadow text-center transition-color duration-300";
+                box.className=`bg-red-${colorWeight} p-8 rounded-xl shadow text-center transition-colors duration-300`;
             }else{
-                box.className="bg-white-100 p-8 rounded-xl shadow text-center transition-color duration-300";
+                box.className=`bg-white-200 p-8 rounded-xl shadow text-center transition-colors duration-300`;
             }
         }
 

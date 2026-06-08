@@ -1,0 +1,152 @@
+<!doctype html>
+<!--html 5 belge türünü belirtir-->
+
+<html lang="en">
+  <!--html kök etiketidir tüm html içeriği bu etiketin içinde bulunur. lang=en sayfanın dilinin ingilizce olduğunu belirtir-->
+
+  <head>
+    <!--head etiketi sayfanın nasıl çalışacağını ve tarayıcının sayfayı nasıl yorumlayacağını belirtir-->
+
+    <meta charset="UTF-8" />
+    <!--Türkçe karakter desteği sağlar-->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--Mobil cihazlarda sayfanın ekran genişliğine göre ölçekler. Yani bu sayfayı açarken genişliği cihazın ekran genişliğine göre ayarlar.-->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"/>
+    <!-- Tailwind CSS kütüphanesini projemize ekler.-->
+
+    <title>Document</title>
+    <!--Tarayıcının üst kısmında görmüş olduğumuz başlığımız.-->
+
+  </head>
+  <body class="bg-indigo-50 text-gray-800 font-sans min-h-screen p-8 flex flex-col items-center justify-center gap-6">
+    <!-- 
+        Kullanıcının göreceği içerik alanımız.
+        bg-indigo-50: Arka planımıza açık indigo rengi tanımlamışız.
+        text-gray-800: Koyu gri bir yazı rengi tanımlamışız.
+        font-sans: font-familysini sans-serif seçmişiz.
+        min-h-screen: Minimum yükseklik boyutumuzu ekranın boyu kadar ayarlıyoruz.
+        p-8: İç boşluk.
+        flex: Flex ile elemanların kontrolünü elimize alıyoruz. 
+        flex-col: Elemanları dikeyde sıralıyoruz.
+        items-center: Yatay eksende ortalıyoruz.
+        justify-center: Dikey eksende ortalıyoruz.
+        gap-6: Elemanlar arası boşluk. 
+    -->
+    <div class="text-center max-w-md flex flex-col items-center">
+      <!--
+      text-center: İçeriğimizi ortalıyoruz.,  max-w-md: Maksimum genişlik medium boyutunda
+      Sonradan eklenen: flex: Elemanların kontrolünü elimize alırız. 
+                        flex-col: Elemanları dikeyde sıralarız.
+                        items-center: Yatay-eksende ortalıyoruz.
+      -->
+
+      <div>
+        <!--Buradaki boş div'e class tanımlamamışız ama aslında bu bir kapsayıcı container gibi çalışır. içindeki yapıyı bir arada tutmak için kullanırız.-->
+
+        <h1 class="text-xl font-bold text-gray-900 mb-2">
+          Fiyatlandırma Kartı Flexi
+        </h1>
+        <!--
+        text-xl: Yazı boyutumuzu büyük yaparız.
+        font-bold: Yazımızı kalınlaştırırız.
+        text-gray-900: Çok koyu gri
+        mb-2: Alt kısıma boşluk veririz (Dış boşluk).
+        -->
+
+        <p class="text-xs text-gray-500">
+          Kart elemanlarını üst üste sıralamak için flex-col, öne çıkan rozeti
+          en üstte göstermek için ise order-first sınıfını kullanacağız.
+        </p>
+        <!--text-xs: Yazı boyutumuzu küçük yaparız, text-gray-500: Gri metin rengi-->
+        
+      </div>
+
+      <div class="w-full max-w-xs bg-white border border-gray-200 rounded-2xl p-6 flex flex-col gap-4 shadow-sm">
+        <!--
+        w-full: Mevcut alanın tamamını kullanırız.
+        max-w-xs: Maksimum küçük genişlik.
+        bg-white: Beyaz arka plan.
+        border: Kenarlık ekleriz.
+        border-gray-200: Açık gri kenarlık
+        rounded-2xl: Büyük yuvarlak köşeler
+        p-6: İç boşluk her taraftan.
+        flex: Flexbox aktif. Elemanların kontrolünü elimize alırız.
+        flex-col: İç elemanları dikeyde sıralarız.
+        gap-4: Elemanlar arası boşluk
+        shadow-sm: Hafif gölge veririz.
+        -->
+
+        <div>
+          <!--Buradaki boş div'e class tanımlamamışız ama aslında bu bir kapsayıcı container gibi çalışır. içindeki yapıyı bir arada tutmak için kullanırız.-->
+
+            <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wider">Standart Paket</h2>
+            <!--
+            text-sm: küçük yazı boyutu
+            font-bold: yazımızı kalınlaştırırız.
+            text-gray-800: koyu gri yazı rengi
+            uppercase: tüm harfleri büyük yaparız.
+            tracking-wider: harfleri birbirinden uzaklaştırırız. Normalden daha ferah bir görünüm elde etmek için.
+            -->
+
+            <p class="text-2xl font-extrabold text-gray-900 mt-1">99 TL / Ay</p>
+            <!--
+            text-2xl: Çok büyük yazı boyutu
+            font-extrabold: Çok kalın yazı
+            text-gray-900: Koyu gri yazı rengi 
+            mt-1: Üst boşluk veririz. (Dış boşluk)
+            -->
+
+        </div>
+        <div class="px-2.5 py-1 bg-indigo-100 border border-indigo-200 text-indigo-700 text-[9px] font-extrabold rounded-full self-start order-first uppercase tracking-wide">
+            En Popüler Paket(order-first)
+        </div>
+        <!--
+        px-2.5: yatay eksende iç boşluk
+        py-1: dikey eksende iç boşluk
+        bg-indigo-100: Açık indigo arka plan rengi
+        border: Kenarlık
+        border-indigo-200: Açık indigo kenarlık
+        text-indigo-700: Koyu indigo yazı rengi
+        text-[9px]: 9px özel yazı boyutu
+        font-extrabold: Çok kalın yazı
+        rounded-full: Tam oval görünüm
+        self-start: Bu eleman kendi bulunduğu flex satırında en başa (başlangıca) hizalansın.
+        uppercase: Tüm harfleri büyük yaparız.
+        tracking-wide: Harfler arası boşluk ama wider'a göre daha az aralık oluşur.
+        order-first: Flex sıralamasında ilk sıraya taşır. Bu elemanı flex sıralamasında en başa al.
+
+        NOT: Buradaki hata 37. satırdaki div'e flex, flex-col ve items-center vermediğimiz için kaynaklanıyordu. self-start sadece bulunduğu div'i etkiler.
+        -->
+
+        <div class="text-xs text-gray-500 space-y-2 border border-gray-100 pt-4">
+        <!--
+        text-xs: Küçük yazı boyutu
+        text-gray-500: Gri metin rengi
+        space-y-2: Her satır arasında boşluk
+        border: Kenarlık
+        border-gray-100: Çok açık gri kenarlık
+        pt-4: Üst iç boşluk
+        -->
+          <p>1 Sınırsız Proje</p>
+          <p>25 tane kişisel proje</p>
+          <p>Grup Çalışması</p>
+        </div>
+        <button class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold transition-colors mt-2">Satın Al</button>
+        <!--
+        w-full: Tam genişlik
+        py-2: Dikeyde iç boşluk
+        bg-indigo-600: Buton arkaplan rengi
+        hover:bg-indigo-700: Üzerine gelince koyulaşır
+        text-white: Beyaz yazı
+        rounded-lg: Yuvarlatılmış köşeler
+        text-xs: Küçük yazı bpyutu
+        font-semibold: Yarı kalın yazı
+        transition-colors: Renk geçiş animasyonu
+        mt-2: Üst boşluk (dış)
+        -->
+      </div>
+    </div>
+  </body>
+</html>

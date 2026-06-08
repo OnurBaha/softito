@@ -26,10 +26,7 @@
             console.log(count);
             number.textContent=count;
 
-            let positiveCount = count;
-            if(positiveCount < 0){
-                positiveCount = -positiveCount;
-            }
+            let positiveCount = Math.abs(count);
 
             let colorIndex = positiveCount - 1;
 

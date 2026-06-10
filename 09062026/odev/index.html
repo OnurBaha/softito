@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Öğrenci Takip Sistemi</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 min-h-screen p-8">
+
+    <div class="max-w-5xl mx-auto">
+
+        <div class="bg-white p-6 rounded shadow mb-5">
+
+            <h2 class="text-xl font-bold mb-3">
+                Canlı Saat
+            </h2>
+
+            <div id="clock" class="text-3xl font-bold mb-3 text-blue-600">
+                Saat Başlatılmadı
+            </div>
+
+            <button id="startClock" class="bg-green-500 text-white px-4 py-2 rounded">
+                Saati Başlat
+            </button>
+
+            <button id="stopClock" class="bg-red-500 text-white px-4 py-2 rounded">
+                Saati Durdur
+            </button>
+
+        </div>
+
+        <h1 class="text-4xl font-bold text-center mb-8">
+            Öğrenci Takip Sistemi
+        </h1>
+
+        <!-- Öğrenci Ekle -->
+
+        <div class="bg-white p-6 rounded shadow mb-5">
+
+            <h2 class="text-xl font-bold mb-4">
+                Öğrenci Ekle
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-3">
+
+                <input id="name" type="text" placeholder="Ad Soyad" class="border p-3 rounded">
+
+                <input id="department" type="text" placeholder="Bölüm" class="border p-3 rounded">
+
+                <input id="notes" type="text" placeholder="70,80,90" class="border p-3 rounded">
+
+            </div>
+
+            <button id="addBtn" class="mt-4 bg-blue-600 text-white px-5 py-2 rounded">
+                Öğrenci Ekle
+            </button>
+
+        </div>
+
+        <!-- Arama -->
+
+        <div class="bg-white p-6 rounded shadow mb-5">
+
+            <h2 class="text-xl font-bold mb-4">
+                Öğrenci Ara
+            </h2>
+
+            <input id="search" type="text" placeholder="Öğrenci adı giriniz" class="border p-3 rounded w-full">
+
+            <button id="searchBtn" class="bg-indigo-600 text-white px-4 py-2 rounded mt-3">
+                Ara
+            </button>
+
+        </div>
+
+        <!-- İşlemler -->
+
+        <div class="bg-white p-6 rounded shadow mb-5">
+
+            <h2 class="text-xl font-bold mb-4">
+                İşlemler
+            </h2>
+
+            <div class="flex flex-wrap gap-3">
+
+                <button id="successfulBtn" class="bg-green-600 text-white px-4 py-2 rounded">
+                    Başarılıları Göster
+                </button>
+
+                <button id="findBtn" class="bg-purple-600 text-white px-4 py-2 rounded">
+                    İlk Başarılı Öğrenci
+                </button>
+
+                <button id="checkBtn" class="bg-orange-500 text-white px-4 py-2 rounded">
+                    Kontroller
+                </button>
+
+                <button id="showAllBtn" class="bg-gray-700 text-white px-4 py-2 rounded">
+                    Tümünü Göster
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- Öğrenciler -->
+
+        <div id="result"></div>
+
+    </div>
+
+    <script>
+
+        const students = [];
+
+        const result = document.getElementById("result");
+
+        // Öğrencileri Listele
+
+        function renderStudents(list = students) {
+
+            result.innerHTML = list.map(student => `
+
+            <div class="bg-white p-5 rounded shadow mb-4">
+
+                <h3 class="font-bold text-xl">
+                    ${student.name.toUpperCase()}
+                </h3>
+
+                <p>
+                    Bölüm:
+                    ${student.department}
+                </p>
+
+                <p>
+                    Notlar:
+                    ${student.notes.join(" - ")}
+                </p>
+
+                <p>
+                    Ortalama:
+                    ${student.average.toFixed(2)}
+                </p>
+
+            </div>
+
+        `).join("");
+
+        }
+
+        // Öğrenci Ekle
+
+        document
+            .getElementById("addBtn")
+            .addEventListener("click", () => {
+
+                const name =
+                    document
+                        .getElementById("name")
+                        .value
+                        .trim();
+
+                const department =
+                    document
+                        .getElementById("department")
+                        .value
+                        .trim();
+
+                const notesText =
+                    document
+                        .getElementById("notes")
+                        .value
+                        .trim();
+
+                if (!name || !department || !notesText) {
+
+                    alert("Tüm alanları doldurun");
+                    return;
+
+                }
+
+                const notes =
+                    notesText
+                        .split(",")
+                        .map(note => parseFloat(note));
+
+                const total =
+                    notes.reduce(
+                        (sum, note) => sum + note,
+                        0
+                    );
+
+                const average =
+                    total / notes.length;
+
+                const student = {
+
+                    name,
+                    department,
+                    notes,
+                    average
+
+                };
+
+                students.push(student);
+
+                renderStudents();
+
+                document.getElementById("name").value = "";
+                document.getElementById("department").value = "";
+                document.getElementById("notes").value = "";
+
+            });
+
+        // Arama
+
+        document
+            .getElementById("searchBtn")
+            .addEventListener("click", () => {
+
+                const searchText =
+                    document
+                        .getElementById("search")
+                        .value
+                        .trim()
+                        .toLowerCase();
+
+                const filteredStudents =
+                    students.filter(student =>
+                        student.name
+                            .toLowerCase()
+                            .includes(searchText)
+                    );
+
+                renderStudents(filteredStudents);
+
+            });
+
+        // Başarılıları Göster
+
+        document
+            .getElementById("successfulBtn")
+            .addEventListener("click", () => {
+
+                const successfulStudents =
+                    students.filter(
+                        student => student.average >= 60
+                    );
+
+                renderStudents(successfulStudents);
+
+            });
+
+        // İlk Başarılı Öğrenci
+
+        document
+            .getElementById("findBtn")
+            .addEventListener("click", () => {
+
+                const foundStudent =
+                    students.find(
+                        student => student.average >= 60
+                    );
+
+                if (foundStudent) {
+
+                    alert(
+                        "Bulunan Öğrenci: "
+                        + foundStudent.name
+                    );
+
+                } else {
+
+                    alert(
+                        "Başarılı öğrenci bulunamadı."
+                    );
+
+                }
+
+            });
+
+        // Some + Every
+
+        document
+            .getElementById("checkBtn")
+            .addEventListener("click", () => {
+
+                const hasFailedStudent =
+                    students.some(
+                        student => student.average < 60
+                    );
+
+                const everyonePassed =
+                    students.every(
+                        student => student.average >= 60
+                    );
+
+                alert(
+
+                    `Başarısız Öğrenci Var mı?
+                    ${hasFailedStudent}
+
+                    Herkes Geçti mi?
+                    ${everyonePassed}`
+
+                );
+
+            });
+
+        // Tümünü Göster
+
+        document
+            .getElementById("showAllBtn")
+            .addEventListener("click", () => {
+
+                renderStudents();
+
+            });
+
+    // Saat
+
+    let clockId = null;
+
+        document
+            .getElementById("startClock")
+            .addEventListener("click", () => {
+
+                if (clockId) return;
+
+                clockId = setInterval(() => {
+
+                    const now = new Date();
+
+                    document
+                        .getElementById("clock")
+                        .innerText =
+                        now.toLocaleTimeString("tr-TR");
+
+                }, 1000);
+
+            });
+
+        document
+            .getElementById("stopClock")
+            .addEventListener("click", () => {
+
+                clearInterval(clockId);
+
+                clockId = null;
+
+            });
+
+    </script>
+
+</body>
+
+</html>

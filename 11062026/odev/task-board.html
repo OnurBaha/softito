@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Board </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body class="p-6 bg-gray-100 items-center justify-center">
+    <div class="p-6 bg-white max-w-md mx-auto rounded shadow">
+        <h1 class="text-xl font-bold mb-4">Görev Yönetimi</h1>
+        
+        <div class="mb-4">
+            <input type="text" id="task-title" placeholder="Görev Adı" class="p-2 border w-full mb-2">
+            <button id="btn-add" class="p-2 bg-blue-200 w-full">Görev Ekle</button>
+        </div>
+
+        <div id="status" class="p-2 border mb-4 text-sm bg-gray-50">Sistem Hazır</div>
+        
+        <ul id="task-list" class="space-y-2 mb-4">
+            <li>Görev Yüklenmedi</li>
+        </ul>
+
+        <div id="task-total" class="p-2 bg-green-200 text-sm font-bold">Toplam Görev: 0</div>
+    </div>
+
+    <script>
+        let gorevler = [
+            { id: 1, baslik: "HTML Yapısını Kur", durum: "Bekliyor" },
+            { id: 2, baslik: "JS Kodlarını Yaz", durum: "Tamamlandı" }
+        ];
+
+        const toplamHesapla = (callback) => {
+            const toplam = gorevler.length;
+            callback(toplam);
+        };
+
+        const listeyiCiz = () => {
+            const listElement = document.getElementById('task-list');
+            listElement.innerHTML = '';
+            
+            gorevler.forEach(task => {
+                const li = document.createElement('li');
+                li.className = "p-2 border flex justify-between items-center text-sm";
+                li.innerHTML = `
+                    <span><strong>${task.baslik}</strong> (${task.durum})</span>
+                    <button class="p-1 bg-yellow-200 text-xs" onclick="durumGuncelleTiklandi(${task.id})">Değiştir</button>
+                `;
+                listElement.appendChild(li);
+            });
+
+            toplamHesapla((adet) => {
+                document.getElementById('task-total').innerText = "Toplam Görev: " + adet;
+            });
+        };
+
+        const sunucuyaKaydet = (gorev) => {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (gorev.baslik !== "") {
+                        resolve("Görev başarıyla işlendi");
+                    } else {
+                        reject("Hata: Görev adı boş olamaz!");
+                    }
+                }, 1000);
+            });
+        };
+
+        const gorevEkleSureci = async () => {
+            const input = document.getElementById('task-title');
+            const status = document.getElementById('status');
+            
+            status.innerText = "Süreç Başlatıldı... Sunucuya gönderiliyor...";
+            
+            const yeniGorev = { id: gorevler.length + 1, baslik: input.value, durum: "Bekliyor" };
+
+            try {
+                await axios.get('https://jsonplaceholder.typicode.com/todos/1');
+                
+                const onayMesaji = await sunucuyaKaydet(yeniGorev);
+                gorevler.push(yeniGorev);
+                listeyiCiz();
+                status.innerText = onayMesaji;
+                input.value = '';
+            } catch (hata) {
+                status.innerText = "Bir hata oluştu: " + hata;
+            }
+        };
+
+        window.durumGuncelleTiklandi = (id) => {
+            const gorev = gorevler.find(g => g.id === id);
+            if (gorev) {
+                gorev.durum = gorev.durum === "Bekliyor" ? "Tamamlandı" : "Bekliyor";
+                listeyiCiz();
+            }
+        };
+
+        document.getElementById('btn-add').addEventListener('click', gorevEkleSureci);
+        listeyiCiz();
+    </script>
+</body>
+</html>

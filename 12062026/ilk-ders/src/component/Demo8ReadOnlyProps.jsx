@@ -4,6 +4,16 @@ import React from 'react'
 const DegistirilmeyenKart = (props)=>{
     const deneVeHataGoster=()=>{
         try{
+            /* HATANIN NEDENİ BURASIDIR:
+               
+               1. React'ta "Props are Read-Only" (Propslar sadece okunabilir) kuralı vardır.
+               2. Bir bileşene (component) dışarıdan gelen props nesnesi, React tarafından dondurulur (Object.freeze).
+               3. props.baslik = "Yeni Baslik"; satırıyla bu salt-okunur nesneyi doğrudan değiştirmeye (mutate etmeye) çalışıyoruz.
+               4. React, bileşenin tutarlılığını korumak için buna izin vermez ve bir "TypeError" fırlatır.
+               
+               Eğer bu veri değişecekse, nesneyi doğrudan değiştirmek yerine 
+               React'ın "State" (Durum) mekanizması kullanılmalıdır.
+            */
             props.baslik="Yeni Baslik";
         } catch(hata){
             alert("Hata Yakalandı: Props Degistirlemez." +hata.message)
@@ -32,3 +42,6 @@ function Demo8ReadonlyProps() {
 };
 
 export default Demo8ReadonlyProps
+
+
+

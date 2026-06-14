@@ -8,6 +8,7 @@ import Demo6ListRendering from "./component/Demo6ListRendering";
 import Demo7EventHandling from "./component/Demo7EventHandling";
 import Demo8ReadonlyProps from "./component/Demo8ReadonlyProps";
 import Demo9DefaultProps from "./component/Demo9DefaultProps";
+import Demo10Composition from "./component/Demo10Composition";
 
 
 function App() {
@@ -32,6 +33,8 @@ function App() {
         return <Demo8ReadonlyProps/>
       case 9:
         return <Demo9DefaultProps/>
+      case 10:
+        return <Demo10Composition/>
       default:
         return <Demo1JSXBasic />;
     }
@@ -47,6 +50,7 @@ function App() {
     {id:7, ad:"Demo 7: Event Handling (Onay Yönetimi)" },
     {id:8, ad:"Demo 8: ReadOnly Props" },
     {id:9, ad:"Demo 9: Default Props" },
+    {id:10, ad:"Demo 10: Composition" },
   ]
 
   return (

@@ -5,6 +5,8 @@ import Toggle from "./components/Toggle";
 import Object from "./components/Object";
 import ArrayState from "./components/ArrayState";
 import MultipleInput from "./components/MultipleInput";
+import Demo11Project from "./components/Demo11Project";
+import DynamicFormFields from "./components/DynamicFormFields";
 
 function App() {
   const [sayfa, setSayfa] = useState(1);
@@ -21,6 +23,10 @@ function App() {
         return <ArrayState/>
       case 5:
         return <MultipleInput/>
+      case 6:
+        return <DynamicFormFields/>
+      case 7:
+        return <Demo11Project/>
       default:
         return <Counter />;
     }
@@ -32,6 +38,8 @@ function App() {
     { id: 3, ad: "Demo 3: Object" },
     { id: 4, ad: "Demo 4: Array State" },
     { id: 5, ad: "Demo 5: Multiple Input" },
+    { id: 6, ad: "Demo 6: Dinamik Form elemanları" },
+    { id: 7, ad: "Demo 7: Project" },
   ];
 
   return (

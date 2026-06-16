@@ -14,6 +14,13 @@ export default function App() {
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [currentCategory, setCurrentCategory] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  /*
+   Yukarıda bize gerekli olan tüm useState'leri alıyoruz.
+   useState'ler bizim bileşenimizin o anki durumunu tutan tarayıcı hafızamız. const [a, b] olarak tanımladığımızda, a bizim değişkenimiz, b ise fonksiyonumuz olmuş oluyor.
+   useState([]) yaptığımızda ise useStatein hangi değeri tutacağını yani array, string, number, boolean gibi türlerden hangisini tutacağını belirlemiş oluyoruz.
+   */
+
+
 
   useEffect(() => {
     fetch("/urunler.json")
@@ -33,6 +40,17 @@ export default function App() {
       });
   }, []);
 
+  /*
+  useEffect, bileşenin yaşam döngüsünü (lifecycle) yönetmek ve yan etkileri (side-effects) gerçekleştirmek için kullanılır.
+  Burada da veri çekme amacı ile kullanmışız. Sayfa ilk açıldığında fetch ile ürünler.json dosyamızdan verileri çekiyoruz.
+  Eğer response ok değilse Error mesajı fırlatıyoruz. Eğer okeyse res.json() ile gelen JSON verisini JavaScript objesine/dizisine çeviriyoruz.
+  .then data diyerek setProducts ın içine dataları alıyoruz ve setLoadingimizi durduruyoruz.
+  herhangi bir hata oluşursa catch bloğu çalışır ve hata mesajını error stateine kaydederiz.
+  En sondaki boş dizi [ ]: Bu veri çekme işleminin sayfa ilk kez yüklendiğinde sadece 1 kere çalışmasını sağlar.
+   */
+
+
+
   const displayProducts = useMemo(() => {
     const filtered = currentCategory === "all"
       ? products
@@ -48,9 +66,34 @@ export default function App() {
     });
   }, [products, currentCategory, sepet]);
 
+  /*
+  displayProducts adında bir değişken tanımlıyoruz. Yani ekrana ürünleri yazdırmak istediğimiz değikenin adı.
+  useMemo ile hesaplanan ürün listesini hafızada tutuyoruz. products, currentCategory veya sepet değişmediği sürece bu hesaplama tekrar yapılmaz. 
+  filtered adında değişken tanımlıyoruz Eğer currentCategory === 'all' ise bana tüm ürünleri göster diyorum.
+  eğer değil ise filtrelenmiş kategorideki ürünleri listele diyorum.
+  filtered.map diyerek filtrelenmiş bu ürün listesindeki her bir ürünü tek tek dönüyoruz (yani listeliyoruz).
+  - Dönüş yaparken sepetUrun adında bir değişkenle, o anki ürünün sepetimizde olup olmadığını kontrol ediyoruz (.find kullanarak).
+  - sepetAdet kısmında; eğer ürün sepetimizde varsa kaç adet eklendiğini buluyoruz, yoksa 0 kabul ediyoruz.
+  - return { ...item, stok: Math.max(0, item.stok - sepetAdet) } diyerek de:
+    Ürünün tüm özelliklerini koruyarak (...item), stok miktarını sepetimizdeki adet kadar düşürüp ekrana öyle yansıtıyoruz. 
+    Math.max(0, ...) kullanarak da stok miktarının eksi değerlere (-1, -2 gibi) düşmesini engelliyoruz, en az 0 olsun diyoruz.
+  En sondaki [products, currentCategory, sepet] dizisi ise: Bu işlemlerin sadece ürünler, seçili kategori veya sepet değiştiğinde yeniden hesaplanmasını sağlıyor.
+   */
+
+
+
   const selectedProduct = useMemo(() => {
     return displayProducts.find((p) => p.id === selectedProductId) || null;
   }, [displayProducts, selectedProductId]);
+
+  /*
+  selectedProduct adında bir değişken tanımlıyoruz. Bu, kullanıcının detayını görmek için tıkladığı ürünü hafızada tutuyor.
+  displayProducts (güncel stoklu ürün listemiz) içinden, seçilen ürünün ID'sine (selectedProductId) eşit olan ürünü .find ile buluyoruz.
+  Eğer o ID ile eşleşen bir ürün bulamazsa kısa devre (||) mantığıyla geriye "null" (boş) döndürüyoruz.
+  En sondaki bağımlılık dizisi [displayProducts, selectedProductId]: Sadece ürün listesi veya seçilen ürün ID'si değişirse bu aramayı tekrar yap diyor.
+   */
+
+
 
   const handleSepeteEkle = useCallback((urun) => {
     if (urun.stok <= 0) return;
@@ -65,6 +108,17 @@ export default function App() {
       return [...prevSepet, { id: urun.id, ad: urun.ad, fiyat: urun.fiyat, adet: 1 }];
     });
   }, []);
+
+  /*
+  handleSepeteEkle adında bir fonksiyon oluşturuyoruz. useCallback kullanarak bu fonksiyonun her renderda gereksiz yere sıfırdan üretilmesini engelliyoruz.
+  İlk olarak eğer eklenmek istenen ürünün stoğu kalmadıysa (urun.stok <= 0) fonksiyonu erkenden bitiriyoruz (return;).
+  setSepet içinde sepetin geçmiş halini (prevSepet) alıyoruz.
+  .find ile bu ürünün zaten sepette olup olmadığını kontrol ediyoruz.
+  Eğer ürün zaten sepette varsa (varOlan), sepeti .map ile dönüp sadece o ürünün adetini 1 arttırıyoruz ({ ...item, adet: item.adet + 1 }).
+  Eğer ürün sepette yoksa, sepetin eski elemanlarını koruyarak (...prevSepet) sonuna bu yeni ürünü adeti 1 olacak şekilde ekliyoruz.
+   */
+
+
 
   const handleAdetGuncelle = useCallback((productId, yeniAdet) => {
     const anaUrun = products.find((p) => p.id === productId);
@@ -87,13 +141,35 @@ export default function App() {
     );
   }, [products]);
 
+  /*
+  handleAdetGuncelle fonksiyonu, sepetin içindeki ürün miktarını arttırıp azaltırken kontroller yapmamızı sağlıyor.
+  İlk olarak products içinden ürünün ham stok durumunu buluyoruz (anaUrun). Ürün yoksa işlem yapmıyoruz.
+  Eğer kullanıcı miktarı 0 veya altına düşürürse (yeniAdet <= 0), .filter kullanarak o ürünü sepetten tamamen çıkartıyoruz.
+  Eğer kullanıcı mağazadaki toplam stoktan daha fazla bir miktar girmeye çalışırsa, bir alert (uyarı) fırlatıp işlemi durduruyoruz.
+  Eğer her şey kurallara uygunsa, sepeti .map ile dönüp o ürünün adetini kullanıcının girdiğiyeniAdet değeriyle güncelliyoruz.
+   */
+
+
+
   const handleUrunCikar = useCallback((productId) => {
     setSepet((prev) => prev.filter((item) => item.id !== productId));
   }, []);
 
+  /*
+  handleUrunCikar fonksiyonu, sepetten bir ürünü "Çöp Kutusu" butonuna basarak tamamen silmek için kullanılır.
+  setSepet içinde .filter kullanarak, gelen productId dışındaki tüm ürünleri sepet tutuyor, eşleşen ürünü ise sepetten ayıklayıp siliyor.
+   */
+
+
+
   const handleCategoryChange = useCallback((newCat) => {
     setCurrentCategory(newCat);
   }, []);
+
+  /*
+  handleCategoryChange fonksiyonu, kullanıcının menüden başka bir kategoriye tıklaması durumunu yönetir.
+  Seçilen yeni kategoriyi (newCat) alarak currentCategory state'imize yazıyor ve yukarıdaki displayProducts'ın tetiklenip ürünleri filtrelemesini sağlıyor.
+   */
 
   return (
     <div className="app-container">

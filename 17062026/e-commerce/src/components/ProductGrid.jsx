@@ -1,15 +1,14 @@
-
-export default function ProductGrid({ products, onSepeteEkle }) {
+export default function ProductGrid({ products, onAddToCart }) {
   return (
     <div className="product-grid">
       {products.map((product) => (
-        <ProductCard key={product.id} product={product} onSepeteEkle={onSepeteEkle} />
+        <ProductCard key={product.id} product={product} onAddToCart={onAddToCart} />
       ))}
     </div>
   );
 }
 
-function ProductCard({ product, onSepeteEkle }) {
+function ProductCard({ product, onAddToCart }) {
   return (
     <div className="product-card">
       <div className="product-img-container">
@@ -22,17 +21,20 @@ function ProductCard({ product, onSepeteEkle }) {
           <span>★</span>
           <span>{product.rating}</span>
           <span className="text-gray-400">({product.ratingCount})</span>
-          <span className="stok-bilgisi" style={{ marginLeft: "10px", color: product.stok === 0 ? "red" : "green" }}>
-            {product.stok === 0 ? "Tükendi" : `Stok: ${product.stok}`}
+          <span 
+            className="stock-info" 
+            style={{ marginLeft: "10px", color: product.stock === 0 ? "red" : "green" }}
+          >
+            {product.stock === 0 ? "Out of Stock" : `Stock: ${product.stock}`}
           </span>
         </div>
         <div className="product-price-container">
           <span className="product-price">{product.price.toLocaleString('tr-TR')} ₺</span>
           <button 
             className="product-btn" 
-            onClick={() => onSepeteEkle(product)}
-            disabled={product.stok === 0}
-            style={{ opacity: product.stok === 0 ? 0.5 : 1 }}
+            onClick={() => onAddToCart(product)}
+            disabled={product.stock === 0}
+            style={{ opacity: product.stock === 0 ? 0.5 : 1 }}
           >
             <span>+</span>
           </button>

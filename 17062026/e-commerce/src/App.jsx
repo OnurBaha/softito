@@ -6,15 +6,15 @@ import Header from "./components/Header";
 import Navbar from "./components/Navbar";
 import ProductGrid from "./components/ProductGrid";
 import Sidebar from "./components/Sidebar";
-import Sepet from "./components/Sepet"; // Yeni ekledik
+import Cart from "./components/Cart";
 import { MOCK_CATEGORIES, MOCK_PRODUCTS } from "./productsMock";
 
 function App() {
   const [products, setProducts] = useState(MOCK_PRODUCTS);
-  const [sepet, setSepet] = useState([]);
-  const [sepetAcik, setSepetAcik] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("Tümü");
-  const [view, setView] = useState('home');
+  const [cart, setCart] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [view, setView] = useState("home");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchInput, setSearchInput] = useState("");
 
@@ -26,76 +26,90 @@ function App() {
       category: data.category,
       rating: 5.0,
       ratingCount: 1,
-      stok: 5, // Yeni eklenen ürünler için varsayılan stok
+      stock: data.stock,
       image: data.image,
       description: data.description,
     };
     setProducts([newProduct, ...products]);
   };
 
-  // Sepetteki adetleri düşerek dinamik stok hesaplama (useMemo)
   const displayProducts = useMemo(() => {
     return products.map((item) => {
-      const sepetUrun = sepet.find((c) => c.id === item.id);
-      const sepetAdet = sepetUrun ? sepetUrun.adet : 0;
+      const cartItem = cart.find((c) => c.id === item.id);
+      const cartQuantity = cartItem ? cartItem.quantity : 0;
       return {
         ...item,
-        stok: Math.max(0, (item.stok || 5) - sepetAdet) // Eğer stok değeri yoksa 5 kabul et
+        stock: Math.max(0, (item.stock || 5) - cartQuantity),
       };
     });
-  }, [products, sepet]);
+  }, [products, cart]);
 
-  // Filtreleme işlemini dinamik stoklu ürünler üzerinden yapıyoruz
   const filteredProducts = useMemo(() => {
     return displayProducts.filter((p) => {
-      const matchesCategory = selectedCategory === 'Tümü' || p.category === selectedCategory;
-      const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                            p.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory =
+        selectedCategory === "All" || p.category === selectedCategory;
+      const matchesSearch =
+        p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.description.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
   }, [displayProducts, selectedCategory, searchQuery]);
 
-  // --- SEPET FONKSİYONLARI ---
-  const handleSepeteEkle = useCallback((urun) => {
-    if (urun.stok <= 0) {
-      alert("Bu ürünün stoğu tükenmiştir!");
+  const handleAddToCart = useCallback((product) => {
+    if (product.stock <= 0) {
+      alert("This product is out of stock!");
       return;
     }
 
-    setSepet((prevSepet) => {
-      const varOlan = prevSepet.find((item) => item.id === urun.id);
-      if (varOlan) {
-        return prevSepet.map((item) =>
-          item.id === urun.id ? { ...item, adet: item.adet + 1 } : item
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((item) => item.id === product.id);
+      if (existingItem) {
+        return prevCart.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item,
         );
       }
-      return [...prevSepet, { id: urun.id, title: urun.title, price: urun.price, adet: 1 }];
+      return [
+        ...prevCart,
+        {
+          id: product.id,
+          title: product.title,
+          price: product.price,
+          quantity: 1,
+        },
+      ];
     });
   }, []);
 
-  const handleAdetGuncelle = useCallback((productId, yeniAdet) => {
-    const anaUrun = products.find((p) => p.id === productId);
-    if (!anaUrun) return;
+  const handleUpdateQuantity = useCallback(
+    (productId, newQuantity) => {
+      const mainProduct = products.find((p) => p.id === productId);
+      if (!mainProduct) return;
 
-    if (yeniAdet <= 0) {
-      setSepet((prev) => prev.filter((item) => item.id !== productId));
-      return;
-    }
+      if (newQuantity <= 0) {
+        setCart((prev) => prev.filter((item) => item.id !== productId));
+        return;
+      }
 
-    if (yeniAdet > anaUrun.stok) {
-      alert(`Üzgünüz, bu üründen en fazla ${anaUrun.stok} adet ekleyebilirsiniz.`);
-      return;
-    }
+      if (newQuantity > mainProduct.stock) {
+        alert(
+          `Üzgünüz, bu üründen en fazla ${mainProduct.stock} adet ekleyebilirsiniz.`,
+        );
+        return;
+      }
 
-    setSepet((prev) =>
-      prev.map((item) =>
-        item.id === productId ? { ...item, adet: yeniAdet } : item
-      )
-    );
-  }, [products]);
+      setCart((prev) =>
+        prev.map((item) =>
+          item.id === productId ? { ...item, quantity: newQuantity } : item,
+        ),
+      );
+    },
+    [products],
+  );
 
-  const handleUrunCikar = useCallback((productId) => {
-    setSepet((prev) => prev.filter((item) => item.id !== productId));
+  const handleRemoveFromCart = useCallback((productId) => {
+    setCart((prev) => prev.filter((item) => item.id !== productId));
   }, []);
 
   const handleSearchSubmit = (e) => {
@@ -103,10 +117,9 @@ function App() {
     setSearchQuery(searchInput);
   };
 
-  // Toplam sepet adedi (Header'daki sepet rozetine göndermek için)
-  const toplamSepetAdedi = useMemo(() => {
-    return sepet.reduce((sum, item) => sum + item.adet, 0);
-  }, [sepet]);
+  const totalCartQuantity = useMemo(() => {
+    return cart.length;
+  }, [cart]);
 
   return (
     <>
@@ -117,8 +130,8 @@ function App() {
         setSearchQuery={setSearchQuery}
         setSelectedCategory={setSelectedCategory}
         setView={setView}
-        sepetAdedi={toplamSepetAdedi} // Yeni prop
-        onSepetAc={() => setSepetAcik(true)} // Yeni prop
+        cartQuantity={totalCartQuantity}
+        onCartOpen={() => setIsCartOpen(true)}
       />
       <Navbar
         selectedCategory={selectedCategory}
@@ -126,38 +139,52 @@ function App() {
         setView={setView}
         categories={MOCK_CATEGORIES}
       />
-      
+
       {view === "home" ? (
         <main className="main-layout">
-          <Sidebar categories={MOCK_CATEGORIES} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
+          <Sidebar
+            categories={MOCK_CATEGORIES}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
           <div className="content-area">
             <div className="content-header">
               <h1 className="page-title">
                 {selectedCategory} {searchQuery && ` "${searchQuery}"`} ürünler
               </h1>
-              <span className="text-sm">Toplam {filteredProducts.length} Ürün</span>
+              <span className="text-sm">
+                Total {filteredProducts.length} Ürün
+              </span>
             </div>
 
             {filteredProducts.length === 0 ? (
               <div className="text-center py-10">
-                <p className="text-gray-500">Aradığınız kriterlere uygun ürün bulunamadı.</p>
+                <p className="text-gray-500">
+                  Aradığınız kriterlere uygun ürün bulunamadı.
+                </p>
               </div>
             ) : (
-              // OnSepeteEkle propunu aşağıya aktardık
-              <ProductGrid products={filteredProducts} onSepeteEkle={handleSepeteEkle} />
+              <ProductGrid
+                products={filteredProducts}
+                onAddToCart={handleAddToCart}
+              />
             )}
           </div>
         </main>
       ) : (
-        <AddProductForm onAddProduct={handleAddProduct} categories={MOCK_CATEGORIES} setView={setView} />
+        <AddProductForm
+          onAddProduct={handleAddProduct}
+          categories={MOCK_CATEGORIES}
+          setView={setView}
+        />
       )}
-      
-      <Sepet
-        sepet={sepet}
-        isOpen={sepetAcik}
-        onClose={() => setSepetAcik(false)}
-        onAdetGuncelle={handleAdetGuncelle}
-        onUrunCikar={handleUrunCikar}
+
+      <Cart
+        cart={cart}
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        onUpdateQuantity={handleUpdateQuantity}
+        onRemoveFromCart={handleRemoveFromCart}
       />
 
       <Footer />

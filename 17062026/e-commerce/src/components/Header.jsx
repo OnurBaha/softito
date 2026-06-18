@@ -5,15 +5,16 @@ export default function Header({
   setSelectedCategory,
   setSearchQuery,
   setView,
-  sepetAdedi,
-  onSepetAc,
+  cartQuantity,
+  onCartOpen,
 }) {
   const handleLogoClick = () => {
     setView("home");
-    setSelectedCategory("Tümü");
+    setSelectedCategory("All");
     setSearchQuery("");
     setSearchInput("");
   };
+
   return (
     <>
       <header className="header">
@@ -24,23 +25,23 @@ export default function Header({
           <form className="search-bar" onSubmit={handleSearchSubmit}>
             <input
               type="text"
-              placeholder="Ürün,Kategori veya Marka Ara..."
+              placeholder="Search product, category or brand..."
               className="search-input"
-              onChange={(e)=>setSearchInput(e.target.value)}
+              onChange={(e) => setSearchInput(e.target.value)}
               value={searchInput}
             />
-            <button type="submit" className="search-button">Ara</button>
+            <button type="submit" className="search-button">Search</button>
           </form>
           <div className="header-actions">
-            <div className="action-item" onClick={()=>setView('addProduct')}>
+            <div className="action-item" onClick={() => setView('addProduct')}>
               <span>Yeni Ürün</span>
             </div>
             <div className="action-item">
               <span>Giriş Yap</span>
             </div>
-            <div className="action-item" onClick={onSepetAc} style={{ cursor: 'pointer' }}>
+            <div className="action-item" onClick={onCartOpen} style={{ cursor: 'pointer' }}>
               <span>Sepetim</span>
-              <span className="badge">{sepetAdedi}</span>
+              <span className="badge">{cartQuantity}</span>
             </div>
           </div>
         </div>

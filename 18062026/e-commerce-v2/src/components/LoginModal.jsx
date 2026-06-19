@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { useForm } from "react-hook-form";
 
-export default function LoginModal({ isOpen, onClose, }) {
+export default function LoginModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   const { login } = useContext(UserContext);
@@ -11,7 +11,7 @@ export default function LoginModal({ isOpen, onClose, }) {
     handleSubmit,
     setError,
     reset,
-    formState: { errors }
+    formState: { errors },
   } = useForm();
 
   const onSubmit = (data) => {
@@ -22,7 +22,7 @@ export default function LoginModal({ isOpen, onClose, }) {
     } else {
       setError("root.serverError", {
         type: "custom",
-        message: "E-posta veya şifre hatalı",
+        message: "E-posta veya şifre hatalı!",
       });
     }
   };
@@ -31,58 +31,59 @@ export default function LoginModal({ isOpen, onClose, }) {
     reset();
     onClose();
   };
+
   return (
     <>
       <div className="modal-overlay">
         <div className="modal-content">
-          <div className="drawer-close" onClick={handleClose}>
+          <span className="drawer-close" onClick={handleClose}>
             &times;
-          </div>
+          </span>
           <h2 className="form-title">Giriş Yap</h2>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="form-group">
               <label className="form-label">E-Posta</label>
               <input
-                type="email"
                 className="form-input"
-                placeholder="ahmet@y.com"
+                type="email"
+                placeholder="ahmet@yilmaz.com"
                 {...register("email", {
-                  required: "E-Posta zorunludur",
+                  required: "E-Posta Zorunludur",
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                     message: "Geçerli e-posta adresi",
                   },
                 })}
               />
-              {errors.email &&(
+              {errors.email && (
                 <span className="form-error">{errors.email.message}</span>
               )}
             </div>
             <div className="form-group">
-              <label className="form-label">Şifre </label>
+              <label className="form-label">Şifre</label>
               <input
-                type="password"
                 className="form-input"
-                placeholder="*****"
-                {...register('password', {
-                    required: 'Şifre zorunludur.',
-                    minLength: {
-                        value: 6,
-                        message: 'Şifre en az 6 karakter olmalıdır.',
-                    },
+                placeholder="********"
+                type="password"
+                {...register("password", {
+                  required: "Şifre Zorunludur",
+                  minLength: {
+                    value: 6,
+                    message: "Şifre en az 6 karakter olmalıdır",
+                  },
                 })}
               />
               {errors.password && (
                 <span className="form-error">{errors.password.message}</span>
               )}
             </div>
-            <button className="form-submit" type="submit">
+            <button type="submit" className="form-submit">
               Giriş Yap
             </button>
             {errors.root?.serverError && (
-                <span className="form-error mt-3">
-                    {errors.root.serverError.message}
-                </span> 
+              <span className="form-error mt-3">
+                {errors.root.serverError.message}
+              </span>
             )}
           </form>
         </div>

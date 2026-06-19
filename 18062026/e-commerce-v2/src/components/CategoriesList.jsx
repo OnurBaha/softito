@@ -15,7 +15,7 @@ export default function CategoriesList({categories, products, onCategoryClick}) 
         </div>
         <div className="categories-grid">
             {categoriesWithCount.map((cat)=>(
-            <div key={cat.name} className="category-card" onClick={onCategoryClick(cat.name)}>
+            <div key={cat.name} className="category-card" onClick={()=>onCategoryClick(cat.name)}>
                 <div className="category-icon-box">
                     <span>{cat.name.substring(0,1)}</span>
                 </div>

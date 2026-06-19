@@ -6,23 +6,60 @@ export default function ProductReturns() {
     const [email, setEmail] = useState('');
     const [reason, setReason] = useState('');
     const [description, setDescription] = useState('');
-    const [isSubmit, setIsSubmit] = useState(false);
+    const [isSubmited, setIsSubmitted] = useState(false);
     const [error, setError] = useState('');
+
+    const handleReturnSubmit=(e)=>{
+        e.preventDefault();
+        if(orderId==='12345'){
+            setIsSubmitted(true)
+            setError();
+        }else{
+            setIsSubmitted(false);
+            setError('Sipariş Bulunamadı!. Örnek Sipariş No:12345')
+        }
+    }
 
 
   return (
     <>
-    <main className="tracking-container">
+    <main className="tracking-container">   
+        {isSubmited ? (
+            <div className="tracking-card">
+                <h2 className="form-title">Talebiniz Alındı</h2>
+                <p className="value-desc">İade Talebiniz Başarıyla Oluşturulmuştur</p>
+                <div className="return-success-box">
+                    <span className="return-success-code">Kargo Kodu: N11-RETURN-987</span>
+                </div>
+                <p className="value-desc text-gray-500">Lütfen bu kodu en yakın kargo şubesine giderek görevliye veriniz.</p>
+                <button
+              className="form-submit mt-4"
+              onClick={() => {
+                setIsSubmitted(false);
+                setOrderId("");
+                setEmail("");
+                setReason("");
+                setDescription("");
+              }}
+            >
+              Yeni Talep Oluştur
+            </button>
+            </div>
+        ):(
         <div className="tracking-card">
             <h2 className="form-title">Kolay İade Talebi</h2>
-            <form>
+            <form onSubmit={handleReturnSubmit}>
                 <div className="form-group">
                     <label className="form-label">Sipariş Numarası</label>
-                    <input type="text" placeholder="Örn:12345" className="form-input" />
+                    <input type="text" placeholder="Örn:12345" className="form-input" value={orderId} onChange={(e)=>setOrderId(e.target.value)} required />
+                </div>
+                <div className="form-group">
+                    <label className="form-label">E-Posta Adresi</label>
+                    <input type="email" className="form-input" value={email} required onChange={(e)=>setEmail(e.target.value)} />
                 </div>
                 <div className="form-group">
                     <label className="form-label">İade Nedeni</label>
-                    <select className="form-select">
+                    <select className="form-select" value={reason} required onChange={(e)=>setReason(e.target.value)}>
                         <option value="">Seçiniz</option>
                         <option value="damage">Arızalı Ürün</option>
                         <option value="size">Beden / Boyut Uymadı</option>
@@ -32,12 +69,13 @@ export default function ProductReturns() {
                 </div>
                 <div className="form-group">
                     <label className="form-label">Açıklama</label>
-                    <textarea placeholder="İade etmek istediğiniz ürünleri ve detayları belirtiniz..." className="form-textarea"></textarea>
+                    <textarea placeholder="İade etmek istediğiniz ürünleri ve detayları belirtiniz..." className="form-textarea" value={description} required onChange={(e)=>setDescription(e.target.value)}></textarea>
                 </div>
-                <button className="form-submit" type="submit">İade Talebi Oluştur</button>
+                <button className="form-submit" type="submit" >İade Talebi Oluştur</button>
             </form>
+            {error && <span className="form-error">{error}</span>}
         </div>
-
+)}
         <div className="tracking-card">
             <h3 className="value-title">Kolay İade Adımları</h3>
             <p className="value-desc">1. Yukarıdaki formadan iade talebi oluşturun</p>

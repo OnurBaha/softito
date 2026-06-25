@@ -26,49 +26,49 @@ export default function App() {
         type="radio"
         id="tab-dashboard"
         name="crm-tab"
-        className="tab-radio"
         checked={activeTab === "dashboard"}
         readOnly
+        className="tab-radio"
       />
       <input
         type="radio"
         id="tab-customers"
         name="crm-tab"
-        className="tab-radio"
         checked={activeTab === "customers"}
         readOnly
+        className="tab-radio"
       />
       <input
         type="radio"
         id="tab-stock"
         name="crm-tab"
-        className="tab-radio"
         checked={activeTab === "stock"}
         readOnly
+        className="tab-radio"
       />
       <input
         type="radio"
         id="tab-products"
         name="crm-tab"
-        className="tab-radio"
         checked={activeTab === "products"}
         readOnly
+        className="tab-radio"
       />
       <input
         type="radio"
         id="tab-reports"
         name="crm-tab"
-        className="tab-radio"
         checked={activeTab === "reports"}
         readOnly
+        className="tab-radio"
       />
       <input
         type="radio"
         id="tab-messages"
         name="crm-tab"
-        className="tab-radio"
-        checked={activeTab === "messagess"}
+        checked={activeTab === "messages"}
         readOnly
+        className="tab-radio"
       />
 
       <main className="login-screen">

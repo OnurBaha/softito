@@ -3,44 +3,36 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   contacts: [
     {
-      id: "AY",
-      name: "Ahmet Yılmaz",
-      role: "Admin",
+      id: "MY",
+      name: "Mehmet Yılmaz",
+      role: "Muhasebe",
       active: true,
-      initials: "AY",
+      initials: "MY",
       bgClass: "avatar-indigo",
     },
     {
-      id: "AS",
-      name: "Aynur Sarı",
-      role: "Muhasebe",
+      id: "AY",
+      name: "Ahmet Yılmaz",
+      role: "Teknik Destek",
       active: true,
-      initials: "AS",
+      initials: "AY",
       bgClass: "avatar-slate",
     },
     {
-      id: "SY",
-      name: "Selami Yılmaz",
-      role: "Teknik Destek",
+      id: "AK",
+      name: "Ayşe Kaya",
+      role: "Admin",
       active: true,
-      initials: "SY",
+      initials: "AK",
       bgClass: "avatar-orange",
     },
     {
-      id: "SK",
-      name: "Selin Kara",
-      role: "Admin",
-      active: false,
-      initials: "SK",
-      bgClass: "avatar-blue",
-    },
-    {
-      id: "AG",
-      name: "Atakan Güçlü",
+      id: "FY",
+      name: "Fatma Yılmaz",
       role: "Satış",
       active: false,
-      initials: "AG",
-      bgClass: "avatar-red",
+      initials: "FY",
+      bgClass: "avatar-blue",
     },
   ],
   activeContactId: "MY",
@@ -49,57 +41,56 @@ const initialState = {
       {
         id: 1,
         sender: "AY",
-        content: "Selam Onur Bey Bugün Toplantımız saat 15.00 da olacaktır.",
+        content:
+          "Selam Selahaddin Bey bugün toplantımız Saat 15.00 da olacaktır. Hatırlatmak istedim.",
         time: "10.30",
       },
       {
         id: 2,
-        sender: "AS",
-        content: "Selam Onur Bey Bugün Toplantımız saat 15.00 da olacaktır.",
+        sender: "FY",
+        content:
+          "Selam Selahaddin Bey bugün toplantımız Saat 15.00 da olacaktır. Hatırlatmak istedim.",
         time: "10.42",
       },
       {
         id: 3,
         sender: "AY",
-        content: "Selam Onur Bey Bugün Toplantımız saat 15.00 da olacaktır.",
-        time: "14.30",
+        content:
+          "Selam Selahaddin Bey bugün toplantımız Saat 15.00 da olacaktır. Hatırlatmak istedim.",
+        time: "14.50",
       },
       {
         id: 4,
-        sender: "AS",
-        content: "Selam Onur Bey Bugün Toplantımız saat 15.00 da olacaktır.",
+        sender: "FY",
+        content:
+          "Selam Selahaddin Bey bugün toplantımız Saat 15.00 da olacaktır. Hatırlatmak istedim.",
         time: "15.30",
       },
     ],
-    SY: [
+    MY: [
       {
         id: 1,
-        sender: "SY",
-        content: "Selam Onur Bey Bugün Toplantımız saat 15.00 da olacaktır.",
+        sender: "MY",
+        content:
+          "Selam Selahaddin Bey bugün toplantımız Saat 15.00 da olacaktır. Hatırlatmak istedim.",
         time: "10.30",
       },
     ],
-    SK: [
+    FY: [
       {
         id: 1,
-        sender: "SK",
-        content: "Selam Onur Bey Bugün Toplantımız saat 15.00 da olacaktır.",
+        sender: "FY",
+        content:
+          "Selam Selahaddin Bey bugün toplantımız Saat 15.00 da olacaktır. Hatırlatmak istedim.",
         time: "10.30",
       },
     ],
-    AG: [
+    AK: [
       {
         id: 1,
-        sender: "AG",
-        content: "Selam Onur Bey Bugün Toplantımız saat 15.00 da olacaktır.",
-        time: "10.30",
-      },
-    ],
-    AS: [
-      {
-        id: 1,
-        sender: "AS",
-        content: "Selam Onur Bey Bugün Toplantımız saat 15.00 da olacaktır.",
+        sender: "AK",
+        content:
+          "Selam Selahaddin Bey bugün toplantımız Saat 15.00 da olacaktır. Hatırlatmak istedim.",
         time: "10.30",
       },
     ],
@@ -110,7 +101,7 @@ const messageSlice = createSlice({
   name: "messaging",
   initialState,
   reducers: {
-    sendMesaage: (state, action) => {
+    sendMessage: (state, action) => {
       const activeId = state.activeContactId;
       if (!state.threads[activeId]) {
         state.threads[activeId] = [];
@@ -125,7 +116,7 @@ const messageSlice = createSlice({
           : 1;
       state.threads[activeId].push({
         id: nextId,
-        sender: "SY",
+        sender: "FY",
         content: action.payload,
         time: timeStr,
       });
@@ -135,6 +126,5 @@ const messageSlice = createSlice({
     },
   },
 });
-
-export const { sendMesaage, setActiveContact } = messageSlice.actions;
+export const { sendMessage, setActiveContact } = messageSlice.actions;
 export default messageSlice.reducer;
